@@ -17,7 +17,7 @@ public interface CompanyService extends IService<Company> {
 
     public void companyDelete(Company company, int Handler);
 
-    public Company companyFind(CompanyUpdateVo compayUpdateVo);
+    public Company companyFind(CompanyUpdateVo companyUpdateVo);
 
     public void companyUpdate(CompanyUpdateVo compayUpdateVo);
 

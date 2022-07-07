@@ -22,7 +22,7 @@ public class CompanyController {
     private CompanyService companyService;
 
     @PostMapping("/companyList")
-    public Object queryRoleList(
+    public Object queryCompanyList(
             @RequestBody CompanySelectVo companySelectVo
     ) {
         HashMap<String, Object> res = new HashMap<>();

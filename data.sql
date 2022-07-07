@@ -145,12 +145,23 @@ CREATE TABLE `company`
     `id`           int NOT NULL AUTO_INCREMENT,
     `company_name` varchar(255) DEFAULT NULL,
     `company_id`   int          DEFAULT NULL,
+    `status`          varchar(5)   NOT NULL,
+    `is_deleted`      varchar(5)   NOT NULL,
+    `created_time`    datetime(6)  NOT NULL,
+    `created_by`      varchar(32)  NOT NULL,
+    `modified_time`   datetime(6)  NOT NULL,
+    `modified_by`     varchar(32)  NOT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
 /*Data for the table `company` */
+
+insert into `company`(`company_name`, `company_id`, `status`, `is_deleted`, `created_time`,`created_by`,`modified_time`,`modified_by`)
+values ('大庆隔壁的油田', '10001', '正常','0','2021-07-29 11:24:41','100000','2021-07-29 11:24:41','100000'),
+       ('大庆隔壁的油田的隔壁村庄', '10002', '正常','0','2021-07-29 11:24:41','100000','2021-07-29 11:24:41','100000');
+
 
 /*Table structure for table `data_material_stock` */
 

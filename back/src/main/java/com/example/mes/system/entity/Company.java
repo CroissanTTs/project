@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class Company implements Serializable {
     @TableId(value = "company_name")
     private Integer id;
-    private String name;
+    private String company_name;
     private Integer company_id;
     private Timestamp created_time;
     private String status;

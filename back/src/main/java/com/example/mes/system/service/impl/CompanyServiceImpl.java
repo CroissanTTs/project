@@ -32,13 +32,14 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     public void companyDelete(Company company, int handler) {
         company.setModified_by(Integer.toString(handler));
         company.setModified_time(MyImplUtils.getCurrentTime());
+        company.setStatus("已删除");
         companyMapper.companyDelete(company);
 
     }
 
     @Override
     public Company companyFind(CompanyUpdateVo companyUpdateVo) {
-        return companyMapper.companyFind(companyUpdateVo.getCompany_name());
+        return companyMapper.companyFind(companyUpdateVo.getCompany_name(),companyUpdateVo.getCompany_id());
     }
 
     @Override
@@ -54,7 +55,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
         companyUpdateVo.setModified_time(companyUpdateVo.getCreated_time());
         companyUpdateVo.setCreated_by(Integer.toString(companyUpdateVo.getUser().getId()));
         companyUpdateVo.setModified_by(companyUpdateVo.getCreated_by());
-        companyUpdateVo.setStatus("0");
+        companyUpdateVo.setStatus("正常");
         companyUpdateVo.setIs_deleted("0");
         companyMapper.companyInsert(companyUpdateVo);
     }

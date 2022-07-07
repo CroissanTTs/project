@@ -7,7 +7,7 @@
         select SQL_CALC_FOUND_ROWS * from company
         where
         (company_name like '%${companySelectVo.filter_company_name}%' or #{companySelectVo.filter_company_name} = "")
-        and (is_deleted = '0')
+        and is_deleted != "1"
         order by ${companySelectVo.sort} ${companySelectVo.sortMethod}
         limit #{numStart}, #{numEnd}
     </select>
@@ -23,12 +23,12 @@
             modified_by = #{company.modified_by},
             status = #{company.status}
         </set>
-        where company_name = #{company.company_name}
+        where company_id = #{company.company_id}
     </update>
 
     <select id="companyFind" resultType="com.example.mes.system.entity.Company">
         select * from company
-        where company_name = #{company_name};
+        where company_name = #{company_name} or company_id = #{company_id};
     </select>
 
     <update id="companyUpdate" parameterType="com.example.mes.system.entity.Vo.CompanyUpdateVo">
