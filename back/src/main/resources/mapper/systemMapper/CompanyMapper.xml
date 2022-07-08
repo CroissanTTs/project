@@ -7,7 +7,7 @@
         select SQL_CALC_FOUND_ROWS * from company
         where
         (company_name like '%${companySelectVo.filter_company_name}%' or #{companySelectVo.filter_company_name} = "")
-        and is_deleted != "1"
+        and (is_deleted != "1")
         order by ${companySelectVo.sort} ${companySelectVo.sortMethod}
         limit #{numStart}, #{numEnd}
     </select>
@@ -28,7 +28,7 @@
 
     <select id="companyFind" resultType="com.example.mes.system.entity.Company">
         select * from company
-        where company_name = #{company_name} or company_id = #{company_id};
+        where company_name = #{company_name} or company_id = #{company_id} or mail = #{mail};
     </select>
 
     <update id="companyUpdate" parameterType="com.example.mes.system.entity.Vo.CompanyUpdateVo">
@@ -47,9 +47,31 @@
 
     <insert id="companyInsert" parameterType="com.example.mes.system.entity.Vo.CompanyUpdateVo">
         insert into
-        company (company_name, company_id, status, is_deleted, created_time, created_by,
+        company (company_name, company_id,mail, status, is_deleted, created_time, created_by,
         modified_time, modified_by)
-        values (#{n.company_name}, #{n.company_id}, #{n.status}, #{n.is_deleted},
+        values (#{n.company_name}, #{n.company_id},#{n.mail}, #{n.status}, #{n.is_deleted},
         #{n.created_time}, #{n.created_by}, #{n.modified_time}, #{n.modified_by});
     </insert>
+
+    <select id="mailFind" resultType="com.example.mes.system.entity.Company">
+        select * from company
+        where mail = #{mail}
+    </select>
+
+    <select id="companyNameFind" resultType="com.example.mes.system.entity.Company">
+        select * from company
+        where company_name = #{company_name}
+    </select>
+
+    <select id="companyIdFind" resultType="com.example.mes.system.entity.Company">
+        select * from company
+        where company_id = #{company_id}
+    </select>
+
+    <select id="getLastData" resultType="com.example.mes.system.entity.Company">
+        select * from company order by company_id DESC limit 1;
+    </select>
+
+
+
 </mapper>

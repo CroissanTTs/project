@@ -39,7 +39,7 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
 
     @Override
     public Company companyFind(CompanyUpdateVo companyUpdateVo) {
-        return companyMapper.companyFind(companyUpdateVo.getCompany_name(),companyUpdateVo.getCompany_id());
+        return companyMapper.companyFind(companyUpdateVo.getCompany_name(),companyUpdateVo.getCompany_id(),companyUpdateVo.getMail());
     }
 
     @Override
@@ -53,10 +53,30 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     public void companyInsert(CompanyUpdateVo companyUpdateVo) {
         companyUpdateVo.setCreated_time(MyImplUtils.getCurrentTime());
         companyUpdateVo.setModified_time(companyUpdateVo.getCreated_time());
-        companyUpdateVo.setCreated_by(Integer.toString(companyUpdateVo.getUser().getId()));
+        companyUpdateVo.setCreated_by(Integer.toString(100000));//默认由系统管理员安排公司的入驻
         companyUpdateVo.setModified_by(companyUpdateVo.getCreated_by());
         companyUpdateVo.setStatus("正常");
         companyUpdateVo.setIs_deleted("0");
         companyMapper.companyInsert(companyUpdateVo);
     }
+
+    @Override
+    public Company mailFind(String mail){
+        return companyMapper.mailFind(mail);
+    }
+    @Override
+    public Company companyNameFind(String company_name){
+        return companyMapper.companyNameFind(company_name);
+    }
+
+    @Override
+    public Company companyIdFind(Integer company_id){
+        return companyMapper.companyIdFind(company_id);
+    }
+
+    @Override
+    public Company getLastData(){
+        return companyMapper.getLastData();
+    }
+
 }
