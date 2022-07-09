@@ -70,11 +70,7 @@ public class CompanyController {
             }
         } else if (companyUpdateVo.getRequest().equals("insert")) {
             if (company != null) {
-                if (company.getMail() == companyUpdateVo.getMail()){
-                    System.out.printf(company.getMail().toString());
-                    System.out.printf(company.getCompany_name().toString());
-                    System.out.printf(company.getCompany_id().toString());
-
+                if (company.getMail().equals(companyUpdateVo.getMail())){
                     MyUtils.fail(res, "该邮箱已被使用,无法注册新公司");
                 }else {
                     MyUtils.fail(res, "该公司已经存在，请勿重复创建");
@@ -99,7 +95,9 @@ public class CompanyController {
                 new_user.role = "超级管理员";
                 new_user.company_id = new_company_id;
                 new_user.user = companyUpdateVo.getUser();
+                new_user.user.setId(100000);
                 userService.userAdd(new_user);
+                res.put("company_id", new_company_id);
                 MyUtils.success(res);
             }
         }
