@@ -19,7 +19,7 @@ public interface CompanyMapper extends BaseMapper<Company> {
 
     void companyDelete(@Param("company") Company company);
 
-    Company companyFind(@Param("company_name")String company_name,@Param("company_id") Integer company_id,@Param("mail") String mail);
+    Company companyFind(@Param("company_name") String company_name, @Param("company_id") Integer company_id, @Param("mail") String mail);
 
     void companyUpdate(@Param("n") CompanyUpdateVo companyUpdateVo);
 

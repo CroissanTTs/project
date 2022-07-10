@@ -6,6 +6,7 @@ import com.example.mes.WorkshopStorage.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -102,7 +103,7 @@ public class GoodsService {
         }
     }
 
-    public void apply(String workshop_id, String id, int quantity, String type, String user) throws SQLException {
+    public void apply(String workshop_id, String id, int quantity, String type, String user, String in_out, String storage_id, String shelf_id) throws SQLException {
         if(workshopMapper.getById(workshop_id) == null){
             throw new SQLException();
         }
@@ -126,6 +127,9 @@ public class GoodsService {
         applyVo.setPermit("0");
         applyVo.setQuantity(quantity);
         applyVo.setTypes(type);
+        applyVo.setIn_out(in_out);
+        applyVo.setStorage_id(storage_id);
+        applyVo.setShelf_id(shelf_id);
         goodsMapper.addApply(applyVo);
     }
 
@@ -155,6 +159,32 @@ public class GoodsService {
         return result;
     }
 
+    public Result<PageVo<ApplyVo>> searchApply(String page, String page_size, String goods_id, String goods_name, Date time1, Date time2, String type) throws SQLException {
+        Result<PageVo<ApplyVo>> result = new Result<>();
+        PageVo<ApplyVo> pageVo = new PageVo();
+        Integer size = goodsMapper.getApplyCount_search(goods_id, goods_name, time1, time2, type);
+        if(size == null)
+            size = 0;
+        pageVo.setTotal(size);
+        pageVo.setSize((size - 1) / Integer.parseInt(page_size) + 1);
+        if (pageVo.getSize() < 0) {
+            pageVo.setSize(0);
+        }
+        if (Integer.parseInt(page) > pageVo.getSize()) {
+            throw new SQLException();
+        }
+        if (Integer.parseInt(page) == pageVo.getSize()) {
+            pageVo.setPages((size - 1) % Integer.parseInt(page_size) + 1);
+        } else {
+            pageVo.setPages(Integer.parseInt(page_size));
+        }
+        pageVo.setCurrent(Integer.parseInt(page));
+        List<ApplyVo> currentlist = goodsMapper.selectAll_search((pageVo.getCurrent() - 1) * Integer.parseInt(page_size), pageVo.getPages(), goods_id, goods_name, time1, time2, type);
+        pageVo.setRecords(currentlist);
+        result.setResult(pageVo);
+        return result;
+    }
+
     public Result<Integer> searchQuantity(String goods_id, String types){
         Result<Integer> result = new Result<>();
         Integer count = goodsMapper.searchQuantity(goods_id, types);
@@ -164,14 +194,7 @@ public class GoodsService {
         return result;
     }
 
-    public void setApply(String workshop_id, String user) throws SQLException {
-        ApplyVo applyVo = goodsMapper.getByUuid(workshop_id);
-        Integer count = goodsMapper.searchQuantity(applyVo.getGoods_id(), applyVo.getTypes());
-        if(count == null)
-            count = 0;
-        if(count < applyVo.getQuantity()){
-            throw new SQLException();
-        }
+    public void setApply(String workshop_id, String user){
         goodsMapper.setApply(workshop_id, user, getTime());
     }
 
@@ -201,13 +224,38 @@ public class GoodsService {
         return result;
     }
 
-    public void managerConfirm(String uuid, String message, String user){
+    public void managerConfirm(String uuid, String message, String in_out){
+        String uuid1 = UUID.randomUUID().toString().replace("-", "");
         if(message.equals("1")){
-            message = "2";
-        }else{
-            message = "10";
+            if(in_out.equals("入库")){
+                int Min=0;
+                int Max=100;
+                String random = String.valueOf(Min + (int)(Math.random() * ((Max - Min) + 1)));
+                goodsMapper.managerConfirm_in(uuid,uuid1,random);
+            }
+            else{
+
+                int quantity = goodsMapper.search_quantity(uuid);
+                System.out.println(quantity);
+                List<GoodsVo> currentlist = goodsMapper.search_out(uuid);
+                for (int i = 0; i < currentlist.size(); i++) {
+                    GoodsVo element = currentlist.get(i);
+                    if (element.getQuantity() <= quantity) {
+                        quantity -= element.getQuantity();
+                        System.out.println(element.getUuid());
+                        goodsMapper.managerConfirm_out(element.getUuid());
+                    } else {
+                        System.out.println(element.getUuid());
+                        goodsMapper.managerConfirm_out1(element.getUuid(), quantity);
+                        break;
+                    }
+                }
+            }
+            goodsMapper.managerConfirm1(uuid,"2");
         }
-        goodsMapper.managerConfirm(uuid, message, user, getTime());
+        else{
+            goodsMapper.managerConfirm1(uuid,"0");
+        }
     }
 
     public Result<PageVo<ApplyVo>> confirmItem(String page, String page_size) throws SQLException {

@@ -142,26 +142,31 @@ DROP TABLE IF EXISTS `company`;
 
 CREATE TABLE `company`
 (
-    `id`           int NOT NULL AUTO_INCREMENT,
-    `company_name` varchar(255) DEFAULT NULL,
-    `company_id`   int          DEFAULT NULL,
-    `mail`         varchar(255) NOT NULL,
-    `status`          varchar(5)   NOT NULL,
-    `is_deleted`      varchar(5)   NOT NULL,
-    `created_time`    datetime(6)  NOT NULL,
-    `created_by`      varchar(32)  NOT NULL,
-    `modified_time`   datetime(6)  NOT NULL,
-    `modified_by`     varchar(32)  NOT NULL,
+    `id`            int          NOT NULL AUTO_INCREMENT,
+    `company_name`  varchar(255) DEFAULT NULL,
+    `company_id`    int          DEFAULT NULL,
+    `mail`          varchar(255) NOT NULL,
+    `status`        varchar(5)   NOT NULL,
+    `is_deleted`    varchar(5)   NOT NULL,
+    `created_time`  datetime(6)  NOT NULL,
+    `created_by`    varchar(32)  NOT NULL,
+    `modified_time` datetime(6)  NOT NULL,
+    `modified_by`   varchar(32)  NOT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+
 /*Data for the table `company` */
+INSERT INTO `company`
+VALUES (1, '模拟公司(请勿删除）', 10000, '无', '正常', '0', '2021-07-29 11:24:41.000000', '100000', '2021-07-29 11:24:41.000000',
+        '100000');
 
-insert into `company`(`company_name`, `company_id`,`mail`, `status`, `is_deleted`, `created_time`,`created_by`,`modified_time`,`modified_by`)
-values ('模拟公司(请勿删除）', '10000','无', '正常','0','2021-07-29 11:24:41','100000','2021-07-29 11:24:41','100000');
 
+insert into `company`(`company_name`, `company_id`, `mail`, `status`, `is_deleted`, `created_time`, `created_by`,
+                      `modified_time`, `modified_by`)
+values ('模拟公司(请勿删除）', '10000', '无', '正常', '0', '2021-07-29 11:24:41', '100000', '2021-07-29 11:24:41', '100000');
 
 
 /*Table structure for table `data_material_stock` */
@@ -1521,6 +1526,7 @@ values ('admin', 'admin', 100000, 'admin', '0', '0', '2017-12-23 19:29:49.000000
        ('默认部门', 'admin', 100001, '部门有关描述', '0', '0', '2017-09-19 13:47:26.000000', '100001',
         '2021-04-27 09:03:29.000000', '100001', NULL);
 
+
 /*Table structure for table `equipment` */
 
 DROP TABLE IF EXISTS `equipment`;
@@ -1669,6 +1675,7 @@ CREATE TABLE `permission`
   ROW_FORMAT = DYNAMIC;
 
 /*Data for the table `permission` */
+
 
 insert into `permission`(`permission_id`, `permission_name`, `access_name`, `status`, `is_deleted`, `created_time`,
                          `created_by`, `modified_time`, `modified_by`, `company_id`)
@@ -2197,12 +2204,40 @@ values ('1', '拉杠箱', NULL),
        ('7', '电脑包', NULL),
        ('8', '商务皮包', NULL);
 
+
+/*Table structure for quality_list*/
+
+DROP TABLE IF EXISTS `quality_list`;
+CREATE TABLE `quality_list`
+(
+    `list_id`     varchar(32) NOT NULL,
+    `workshop_id` varchar(32) NOT NULL,
+    `line_id`     varchar(32) NOT NULL,
+    `name`        varchar(45) NOT NULL,
+    `num`         int(11)     NOT NULL,
+    `status`      varchar(5) DEFAULT NULL COMMENT '0未质检  1已质检',
+    PRIMARY KEY (`list_id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 28
+  DEFAULT CHARSET = utf8
+  ROW_FORMAT = DYNAMIC;
+
+/*Records of quality_list*/
+
+INSERT INTO `quality_list`
+VALUES ('1526e2a0f1714387a1a0d09a6f1bf146', '111', '22', '登山包', 50, '1');
+INSERT INTO `quality_list`
+VALUES ('4bf3aa3f964b4712bd90e56622195a00', '222', '11', '登山包', 100, '0');
+INSERT INTO `quality_list`
+VALUES ('c4735beb91b44945a4aa6911c684a086', '111', '22', '拉杆箱', 200, '0');
+
 /*Table structure for table `quality_management` */
 
 DROP TABLE IF EXISTS `quality_management`;
 
 CREATE TABLE `quality_management`
 (
+    `list_id`         varchar(32) DEFAULT NULL,
     `check_order`     int            NOT NULL AUTO_INCREMENT,
     `check_time`      datetime       NOT NULL,
     `order_num`       int            NOT NULL,
@@ -2227,6 +2262,7 @@ CREATE TABLE `quality_management`
   AUTO_INCREMENT = 28
   DEFAULT CHARSET = utf8
   ROW_FORMAT = DYNAMIC;
+
 
 /*Data for the table `quality_management` */
 
@@ -11053,7 +11089,7 @@ CREATE TABLE `workshop_station`
     `id`            varchar(32) NOT NULL,
     `workshop_id`   varchar(32) NOT NULL,
     `line_id`       varchar(32) NOT NULL,
-    `user`          varchar(32) NOT NULL,
+    `user`          varchar(32) DEFAULT NULL,
     `equip_id`      varchar(32) DEFAULT NULL,
     `stationOrder`  varchar(32) NOT NULL,
     `verify`        varchar(32) DEFAULT NULL,

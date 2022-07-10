@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -45,9 +47,9 @@ public class GoodsContorller {
     }
 
     @GetMapping(value = "apply")
-    public Result<?> apply(String workshop_id, String id, int quantity, String type, String user) {
+    public Result<?> apply(String workshop_id, String id, int quantity, String type, String user, String in_out, String storage_id, String shelf_id) {
         try {
-            goodsService.apply(workshop_id, id, quantity, type, user);
+            goodsService.apply(workshop_id, id, quantity, type, user, in_out, storage_id, shelf_id);
         } catch (Exception e) {
             LoggerFactory.getLogger(this.getClass()).error("提交失败", e.getMessage());
             return Result.error("提交失败!");
@@ -60,6 +62,19 @@ public class GoodsContorller {
         Result<PageVo<ApplyVo>> result = new Result<>();
         try {
             result = goodsService.applyItem(current, pages);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LoggerFactory.getLogger(this.getClass()).error("" + e.getMessage());
+            result.error500(e.getMessage());
+        }
+        return result;
+    }
+
+    @GetMapping(value = "searchApply")
+    public Result<PageVo<ApplyVo>> searchApply(String current, String pages, String goods_id, String goods_name, Date time1, Date time2, String type) {
+        Result<PageVo<ApplyVo>> result = new Result<>();
+        try {
+            result = goodsService.searchApply(current, pages, goods_id, goods_name, time1, time2, type);
         } catch (Exception e) {
             e.printStackTrace();
             LoggerFactory.getLogger(this.getClass()).error("" + e.getMessage());
@@ -83,7 +98,6 @@ public class GoodsContorller {
 
     @GetMapping(value = "setApply")
     public Result<?> setApply(String user, String uuid) {
-        Result<?> result = new Result<>();
         try {
             goodsService.setApply(uuid, user);
         } catch (Exception e) {
@@ -107,15 +121,18 @@ public class GoodsContorller {
     }
 
     @GetMapping(value = "managerConfirm")
-    public Result<?> managerConfirm(String uuid, String message, String user) {
+    public Result<?> managerConfirm(String uuid, String message, String in_out) {
         Result<?> result = new Result<>();
+        goodsService.managerConfirm(uuid, message, in_out);
+        return Result.ok("提交成功!");
+        /*
         try {
-            goodsService.managerConfirm(uuid, message, user);
+            goodsService.managerConfirm(uuid, message, in_out);
         } catch (Exception e) {
             LoggerFactory.getLogger(this.getClass()).error("提交失败", e.getMessage());
             return Result.error("提交失败!");
         }
-        return Result.ok("提交成功!");
+        return Result.ok("提交成功!");*/
     }
 
     @GetMapping(value = "confirmItem")
